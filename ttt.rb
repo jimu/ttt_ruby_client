@@ -7,7 +7,7 @@ ver = "0.0.1 2021-09-02"
 
 puts "Tic-Tac-Toe Ruby Client v#{ver} Jim Urbas"
 
-url = "http://localhost:3016/matches"
+url = "http://osaka:3016/matches"
 
 uri = URI(url)
 http = Net::HTTP.new(uri.host, uri.port)
