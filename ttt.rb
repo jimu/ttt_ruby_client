@@ -5,7 +5,7 @@ require 'json'
 
 ver = "0.0.1 2021-09-02"
 
-puts "Tic-Tac-Toe Ruby Client v#{ver} Jim Urbas"
+puts "Tic-Tac-Toe Ruby Client v#{ver} Jim Urbas\n\n"
 
 url = "http://osaka:3016/matches"
 
@@ -19,7 +19,11 @@ response = http.request(request)
 
 matches = JSON.parse(response.body)
 
+# header
+puts "%4s %-20s" % ['ID', 'Title']
+# puts "%4s %-20s" % ['--', '-'.times(20)]
+puts '-'*4 + ' ' + '-'*20
 
 matches.each do |m|
-  puts "#{m['id']} #{m['title']}"
+  puts "G%03d %-20s" % [m['id'], m['title']]
 end
