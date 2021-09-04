@@ -4,9 +4,8 @@ require 'net/http'
 require 'json'
 require 'colorize'
 
-ver = "0.0.1 2021-09-02"
+VER = "0.0.1 2021-09-02"
 
-puts "Tic-Tac-Toe Ruby Client v#{ver} Jim Urbas\n\n"
 
 
 
@@ -28,8 +27,35 @@ def list
   puts "%4s %-20s" % ['ID', 'Title']
   puts '-'*4 + ' ' + '-'*20
 
+  puts response
+
   matches.each do |m|
-    puts "G%03d %-20s" % [m['id'], m['title']]
+    puts m
+    puts "G%03d %-20s" % [m['id'].to_i, m['title']]
+  end
+end
+
+
+# list all addresses
+def list_addresses
+  url = "http://osaka:3016/addresses"
+
+  uri = URI(url)
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = false
+
+  request = Net::HTTP::Get.new(uri.path, {'Content-Type' => 'application/json'})
+
+  response = http.request(request)
+
+  matches = JSON.parse(response.body)
+
+  # header
+  puts "%4s %-20s %-8s %-20s" % ['ID', 'Name', 'Type', 'Address']
+  puts "%4s %-20s %-8s %-20s" % ['-'*4, '-'*20, '-'*8, '-'*20]
+
+  matches.each do |m|
+    puts "%4d %-20s %-8s %-20s" % [m['id'], m['user_name'], m['type'], m['value']]
   end
 end
 
@@ -42,6 +68,7 @@ def delete_ui
 
   delete id if id > 0
 end
+
 
 
 # delete match id
@@ -65,26 +92,38 @@ def delete id
 end
   
 
-while true
-
+def prompt
   print 'L'.yellow.bold + 'ist, ' +
         'D'.yellow.bold + 'elete, ' +
+        'A'.yellow.bold + 'ddrs, ' +
         'e' + 'X'.yellow.bold + 'it' +
         '> '
+end
 
-  command = gets
+def main
 
-  break if !command
+  puts "Tic-Tac-Toe Ruby Client v#{VER} Jim Urbas\n\n"
 
-  case command.chomp.upcase
-    when 'L'
-      list
-    when 'X'
-      exit 0
-    when 'D'
-      delete_ui
+  while true
+    
+    prompt
+
+    command = gets
+
+    break if !command
+
+    case command.chomp.upcase
+      when 'L'
+        list
+      when 'A'
+        list_addresses
+      when 'X'
+        exit 0
+      when 'D'
+        delete_ui
+    end
   end
 end
 
 
-
+main
